@@ -232,7 +232,7 @@
     </div>
 
     <div class="hero" id="heroWrap">
-      <img id="heroImg" src="assets/logo.png" alt="Hero">
+      <img id="heroImg" src="assets/logo-wide.png" alt="Hero">
     </div>
 
     <!-- HOME -->
@@ -240,22 +240,6 @@
       <div class="card">
         <div class="h1" id="homeTitle">Rollin With Braz</div>
         <p class="p" id="homeDesc"></p>
-      </div>
-    </section>
-
-    <!-- LIVE -->
-    <section id="view-live" class="hidden">
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-          <div class="h1" style="margin:0;">LIVE</div>
-          <div class="pill offline" id="liveStatusPill">OFFLINE</div>
-        </div>
-        <p class="p" id="liveDesc" style="margin-top:8px;"></p>
-
-        <div style="margin-top:12px;">
-          <a class="btn primary" id="watchLiveBtn" href="#" target="_blank" rel="noopener noreferrer">Watch Live</a>
-          <div class="muted" id="liveHint">Live will open in your browser/player when available.</div>
-        </div>
       </div>
     </section>
 
@@ -275,7 +259,7 @@
 
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+      window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js"));
     }
 
     // iOS PWA return repaint fix (safe)
@@ -288,7 +272,6 @@
 
     const views = {
       home: document.getElementById("view-home"),
-      live: document.getElementById("view-live"),
       links: document.getElementById("view-links")
     };
 
@@ -398,9 +381,8 @@
       else { heroWrap.classList.add("hidden"); }
 
       // Tabs
-      const tabs = Array.isArray(cfg.tabs) ? cfg.tabs.slice() : [{id:"home",label:"Home"},{id:"links",label:"Links"}];
-      const liveEnabled = !!cfg.live?.enabled;
-      const finalTabs = tabs.filter(t => t.id !== "live" || liveEnabled);
+      const tabs = Array.isArray(cfg.tabs) ? cfg.tabs.slice() : [{id:"home",label:"Home"},{id:"links",label:"Connect"}];
+      const finalTabs = tabs.filter(t => t.id !== "live");
 
       const tabRow = document.getElementById("tabRow");
       tabRow.innerHTML = "";
@@ -415,35 +397,6 @@
 
       renderLinks(cfg.links?.sections || []);
       renderFeedback(cfg.feedback);
-
-      // Live state
-      if (liveEnabled) {
-        const status = (cfg.live.status || "offline").toLowerCase();
-        const pill = document.getElementById("liveStatusPill");
-        const desc = document.getElementById("liveDesc");
-        const watchBtn = document.getElementById("watchLiveBtn");
-
-        desc.textContent = cfg.live.description || "";
-
-        if (status === "live") {
-          pill.textContent = "LIVE";
-          pill.className = "pill live";
-        } else {
-          pill.textContent = "OFFLINE";
-          pill.className = "pill offline";
-        }
-
-        const watch = safeURL(cfg.live.watch_url || "");
-        if (watch) {
-          watchBtn.href = watch;
-          watchBtn.style.opacity = "1";
-          watchBtn.style.pointerEvents = "auto";
-        } else {
-          watchBtn.href = "#";
-          watchBtn.style.opacity = "0.5";
-          watchBtn.style.pointerEvents = "none";
-        }
-      }
 
       // Pilot badge
       const pilotBadge = document.getElementById("pilotBadge");
