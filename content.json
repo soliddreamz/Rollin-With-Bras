@@ -1,0 +1,45 @@
+{
+  "app": {
+    "name": "Rollin With Braz"
+  },
+  "branding": {
+    "pilot_badge": true
+  },
+  "tabs": [
+    { "id": "home", "label": "Home" },
+    { "id": "links", "label": "Connect" }
+  ],
+  "home": {
+    "title": "Rollin With Braz",
+    "subtitle": "Official app",
+    "description": "A care-first digital home for community, culture, and connection — built to stand independent of algorithmic platforms.",
+    "hero_image": "assets/logo.png"
+  },
+  "live": {
+    "enabled": false,
+    "status": "offline",
+    "description": "",
+    "watch_url": ""
+  },
+  "links": {
+    "sections": [
+      {
+        "title": "Official",
+        "items": [
+          { "label": "Website", "url": "https://rollinwithbraz.com" }
+        ]
+      },
+      {
+        "title": "Social",
+        "items": [
+          { "label": "Instagram", "url": "https://instagram.com/brazyl856" }
+        ]
+      }
+    ]
+  },
+  "feedback": {
+    "enabled": false,
+    "mailto": "",
+    "subject": "Rollin With Braz — App Feedback"
+  }
+}
