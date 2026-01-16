@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Rollin With Braz — Official App</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6b4a2b">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <style>
+    :root{
+      --bg1:#0b0b10;
+      --card:rgba(255,255,255,0.06);
+      --stroke:rgba(255,255,255,0.10);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,0.72);
+      --pill:rgba(255,255,255,0.10);
+      --pillStroke:rgba(255,255,255,0.12);
+      --accent:#6b4a2b;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg1);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+      padding:18px 14px 90px;
+    }
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:6px 2px 10px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .brand img{
+      width:44px;height:44px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid var(--stroke);
+      background:#000;
+    }
+    .brand .t{min-width:0}
+    .brand .t .name{
+      font-weight:800;
+      letter-spacing:0.4px;
+      font-size:16px;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand .t .sub{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:3px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      margin:10px 0 14px;
+      border-radius:18px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.03);
+      overflow:hidden;
+    }
+    .hero img{
+      width:100%;
+      display:block;
+      height:auto;
+      background:#000;
+    }
+
+    .tabs{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.82);
+      backdrop-filter:blur(12px);
+      border-top:1px solid var(--stroke);
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    }
+    .tabrow{
+      max-width:720px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+    }
+    .tab{
+      flex:1 1 0;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:13px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color:rgba(255,255,255,0.20);
+      background:rgba(255,255,255,0.08);
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background:var(--card);
+      border-radius:18px;
+      padding:14px;
+      margin:12px 0;
+    }
+    .h1{font-size:18px;font-weight:800;margin:0 0 6px 0}
+    .p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+
+    /* Pill Rows (high-risk component) — Base safety rules */
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.04);
+      border-radius:16px;
+      padding:12px 12px;
+      overflow:hidden; /* LOCKED */
+      margin:10px 0;
+      text-decoration:none;
+      color:inherit;
+    }
+    .row .left{
+      min-width:0; /* LOCKED */
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+    .row .left .label{
+      font-weight:700;
+      font-size:14px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .row .left .hint{
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .pill{
+      flex:0 0 auto; /* LOCKED */
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--pillStroke);
+      background:var(--pill);
+      color:var(--text);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .pill.live{ background:rgba(239,68,68,0.18); border-color:rgba(239,68,68,0.35); }
+    .pill.offline{ background:rgba(255,255,255,0.08); }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      color:var(--text);
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn.primary{
+      background:rgba(107,74,43,0.24);
+      border-color:rgba(107,74,43,0.40);
+    }
+    .muted{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.35}
+    .hidden{display:none!important}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Logo">
+        <div class="t">
+          <div class="name" id="appName">Rollin With Braz</div>
+          <div class="sub" id="appSub">Official app</div>
+        </div>
+      </div>
+      <div class="badge" id="pilotBadge">Pilot 6</div>
+    </div>
+
+    <div class="hero" id="heroWrap">
+      <img id="heroImg" src="assets/logo.png" alt="Hero">
+    </div>
+
+    <!-- HOME -->
+    <section id="view-home">
+      <div class="card">
+        <div class="h1" id="homeTitle">Rollin With Braz</div>
+        <p class="p" id="homeDesc"></p>
+      </div>
+    </section>
+
+    <!-- LIVE -->
+    <section id="view-live" class="hidden">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div class="h1" style="margin:0;">LIVE</div>
+          <div class="pill offline" id="liveStatusPill">OFFLINE</div>
+        </div>
+        <p class="p" id="liveDesc" style="margin-top:8px;"></p>
+
+        <div style="margin-top:12px;">
+          <a class="btn primary" id="watchLiveBtn" href="#" target="_blank" rel="noopener noreferrer">Watch Live</a>
+          <div class="muted" id="liveHint">Live will open in your browser/player when available.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS -->
+    <section id="view-links" class="hidden">
+      <div class="card">
+        <div class="h1" style="margin:0 0 10px 0;">Connect</div>
+        <div id="linksMount"></div>
+        <div id="feedbackMount" style="margin-top:14px;"></div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="tabs">
+    <div class="tabrow" id="tabRow"></div>
+  </nav>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+    }
+
+    // iOS PWA return repaint fix (safe)
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        document.body.style.transform = "translateZ(0)";
+        requestAnimationFrame(() => (document.body.style.transform = ""));
+      }
+    });
+
+    const views = {
+      home: document.getElementById("view-home"),
+      live: document.getElementById("view-live"),
+      links: document.getElementById("view-links")
+    };
+
+    function setActiveTab(id){
+      Object.keys(views).forEach(k => views[k].classList.toggle("hidden", k !== id));
+      [...document.querySelectorAll(".tab")].forEach(t => t.classList.toggle("active", t.dataset.id === id));
+      history.replaceState(null, "", `#${id}`);
+    }
+
+    function safeURL(u){
+      try { return new URL(u).toString(); }
+      catch { return ""; }
+    }
+
+    function renderLinks(sections){
+      const mount = document.getElementById("linksMount");
+      mount.innerHTML = "";
+      (sections || []).forEach(sec => {
+        const title = document.createElement("div");
+        title.style.fontWeight = "800";
+        title.style.margin = "10px 0 6px";
+        title.textContent = sec.title || "Links";
+        mount.appendChild(title);
+
+        (sec.items || []).forEach(item => {
+          const a = document.createElement("a");
+          a.className = "row";
+          a.href = safeURL(item.url) || "#";
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+
+          const left = document.createElement("div");
+          left.className = "left";
+
+          const label = document.createElement("div");
+          label.className = "label";
+          label.textContent = item.label || "Link";
+
+          const hint = document.createElement("div");
+          hint.className = "hint";
+          hint.textContent = a.href !== "#" ? a.href.replace(/^https?:\/\//, "") : "Invalid link";
+
+          left.appendChild(label);
+          left.appendChild(hint);
+
+          const pill = document.createElement("div");
+          pill.className = "pill";
+          pill.textContent = "Open";
+
+          a.appendChild(left);
+          a.appendChild(pill);
+          mount.appendChild(a);
+        });
+      });
+    }
+
+    function renderFeedback(feedback){
+      const mount = document.getElementById("feedbackMount");
+      mount.innerHTML = "";
+      if (!feedback || !feedback.enabled) return;
+
+      const mail = feedback.mailto || "";
+      const subject = encodeURIComponent(feedback.subject || "App Feedback");
+      const href = `mailto:${mail}?subject=${subject}`;
+
+      const a = document.createElement("a");
+      a.className = "row";
+      a.href = href;
+
+      const left = document.createElement("div");
+      left.className = "left";
+
+      const label = document.createElement("div");
+      label.className = "label";
+      label.textContent = "Feedback";
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+      hint.textContent = mail;
+
+      left.appendChild(label);
+      left.appendChild(hint);
+
+      const pill = document.createElement("div");
+      pill.className = "pill";
+      pill.textContent = "Email";
+
+      a.appendChild(left);
+      a.appendChild(pill);
+      mount.appendChild(a);
+    }
+
+    async function boot(){
+      const res = await fetch("./content.json", { cache: "no-store" });
+      const cfg = await res.json();
+
+      document.getElementById("appName").textContent = cfg.home?.title || cfg.app?.name || "App";
+      document.getElementById("appSub").textContent = cfg.home?.subtitle || "Official app";
+      document.getElementById("homeTitle").textContent = cfg.home?.title || "Home";
+      document.getElementById("homeDesc").textContent = cfg.home?.description || "";
+
+      // Hero
+      const hero = cfg.home?.hero_image || "";
+      const heroWrap = document.getElementById("heroWrap");
+      const heroImg = document.getElementById("heroImg");
+      if (hero) { heroImg.src = hero; heroWrap.classList.remove("hidden"); }
+      else { heroWrap.classList.add("hidden"); }
+
+      // Tabs
+      const tabs = Array.isArray(cfg.tabs) ? cfg.tabs.slice() : [{id:"home",label:"Home"},{id:"links",label:"Links"}];
+      const liveEnabled = !!cfg.live?.enabled;
+      const finalTabs = tabs.filter(t => t.id !== "live" || liveEnabled);
+
+      const tabRow = document.getElementById("tabRow");
+      tabRow.innerHTML = "";
+      finalTabs.forEach(t => {
+        const b = document.createElement("div");
+        b.className = "tab";
+        b.textContent = t.label;
+        b.dataset.id = t.id;
+        b.onclick = () => setActiveTab(t.id);
+        tabRow.appendChild(b);
+      });
+
+      renderLinks(cfg.links?.sections || []);
+      renderFeedback(cfg.feedback);
+
+      // Live state
+      if (liveEnabled) {
+        const status = (cfg.live.status || "offline").toLowerCase();
+        const pill = document.getElementById("liveStatusPill");
+        const desc = document.getElementById("liveDesc");
+        const watchBtn = document.getElementById("watchLiveBtn");
+
+        desc.textContent = cfg.live.description || "";
+
+        if (status === "live") {
+          pill.textContent = "LIVE";
+          pill.className = "pill live";
+        } else {
+          pill.textContent = "OFFLINE";
+          pill.className = "pill offline";
+        }
+
+        const watch = safeURL(cfg.live.watch_url || "");
+        if (watch) {
+          watchBtn.href = watch;
+          watchBtn.style.opacity = "1";
+          watchBtn.style.pointerEvents = "auto";
+        } else {
+          watchBtn.href = "#";
+          watchBtn.style.opacity = "0.5";
+          watchBtn.style.pointerEvents = "none";
+        }
+      }
+
+      // Pilot badge
+      const pilotBadge = document.getElementById("pilotBadge");
+      pilotBadge.style.display = cfg.branding?.pilot_badge ? "inline-flex" : "none";
+
+      const hash = (location.hash || "#home").replace("#","");
+      const defaultTab = finalTabs.some(t => t.id === hash) ? hash : finalTabs[0].id;
+      setActiveTab(defaultTab);
+    }
+
+    boot();
+  </script>
+</body>
+</html>
